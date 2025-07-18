@@ -15,13 +15,3 @@ A simple GraphQL server with:
 - A working query: `getAllSkills`
 
 ---
-
-## 🛠️ Steps
-
-### 1️⃣ Initialize the Project
-
-```bash
-mkdir graphql-server
-cd graphql-server
-npm init -y
-```
