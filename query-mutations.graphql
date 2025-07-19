@@ -1,0 +1,79 @@
+# Add Skills Prefill Data
+mutation {
+  skill1: addSkill(input: { title: "GraphQL", status: "In Progress" }) {
+    id
+    title
+    status
+  }
+  skill2: addSkill(input: { title: "Node.js", status: "Planned" }) {
+    id
+    title
+    status
+  }
+  skill3: addSkill(input: { title: "Express", status: "Completed" }) {
+    id
+    title
+    status
+  }
+}
+
+# Add Modules using Prefill Data Skill IDs
+mutation {
+  module1: addModule(
+    input: {
+      title: "GraphQL Basics"
+      description: "Learn about types, queries, and mutations."
+      skillId: "687c2d17941c9c227bafaf24"
+    }
+  ) {
+    id
+    title
+  }
+
+  module2: addModule(
+    input: {
+      title: "Apollo Server"
+      description: "Set up and use Apollo Server with Node.js."
+      skillId: "687c2d17941c9c227bafaf24"
+    }
+  ) {
+    id
+    title
+  }
+
+  module3: addModule(
+    input: {
+      title: "Middleware"
+      description: "Learn about middleware in Express."
+      skillId: "687c2d18941c9c227bafaf2a"
+    }
+  ) {
+    id
+    title
+  }
+}
+
+# Query All Skill Data with Modules
+query {
+  getAllSkills {
+    id
+    title
+    status
+    modules {
+      id
+      title
+      description
+    }
+  }
+}
+
+query ($skillId: ID!) {
+  getModulesBySkill(skillId: $skillId) {
+    id
+    title
+    description
+    skill {
+      title
+    }
+  }
+}
