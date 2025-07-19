@@ -1,0 +1,55 @@
+# 1: Query All Skills
+
+query {
+  getAllSkills {
+    ...SkillFields
+  }
+}
+fragment SkillFields on Skill {
+  id
+  title
+  status
+}
+
+# 2. Query a single skill using a variable
+
+query getSkill($id: ID!) {
+  getSkill(id: $id) {
+    ...SkillFields
+  }
+}
+fragment SkillFields on Skill {
+  title
+  status
+}
+
+{
+    "id": "51234wsdas...."
+}
+
+# 3. Use aliases to query two different skills in one query
+
+query {
+    plannedSkill: getSkill(id: "ID_1") {
+        ...SkillFields
+    }
+    inProgressSkill: getSkill(id: "ID_2") {
+        ...SkillFields
+    }
+}
+fragment SkillFields on Skill {
+  title
+  status
+}
+
+# 4. Use an Invalid ID and catch the error
+query {
+  getSkill(id: "12312") {
+    ...SkillFields
+  }
+}
+  fragment SkillFields on Skill {
+    id
+    title
+    status
+  }

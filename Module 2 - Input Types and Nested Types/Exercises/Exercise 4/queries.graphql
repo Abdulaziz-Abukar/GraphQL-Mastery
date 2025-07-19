@@ -1,0 +1,25 @@
+# Task 1: Use Aliases
+# Let's say you want to get the same skill twice, but labeled differently.
+query {
+  firstSkill: getSkill(id: "ID_1") {
+    title
+    status
+  }
+  secondSkill: getSkill(id: "ID_2") {
+    title
+    status
+  }
+}
+
+# Task 2: Use Fragments
+# Instead of repeating fields like title and status, you can define them once:
+query {
+  getAllSkills {
+    ...SkillFields
+  }
+}
+
+fragment SkillFields on Skill {
+  title
+  status
+}
