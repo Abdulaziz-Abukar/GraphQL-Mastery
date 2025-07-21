@@ -59,6 +59,18 @@ const typeDefs = gql`
   }
 
   extend type Query {
+    getSkillByStatus(status: String!): [Skill]
+  }
+
+  extend type Query {
+    getSkillsSorted(by: String!, direction: String!): [Skill]
+  }
+
+  extend type Query {
+    getAllSkillsPaginated(limit: Int!, offset: Int!): [Skill]
+  }
+
+  extend type Query {
     getAllModules: [Module]
     getModulesBySkill(skillId: ID!): [Module]
   }
@@ -90,6 +102,20 @@ const resolvers = {
     getAllModules: async () => await Module.find(),
     getModulesBySkill: async (_, { skillId }) => {
       return await Module.find({ skill: skillId });
+    },
+
+    getSkillByStatus: async (_, { status }) => {
+      return await Skill.find({ status });
+    },
+
+    getSkillsSorted: async (_, { by, direction }) => {
+      const sortDirection = direction === "desc" ? -1 : 1;
+
+      return await Skill.find().sort({ [by]: sortDirection });
+    },
+
+    getAllSkillsPaginated: async (_, { limit, offset }) => {
+      return await Skill.find().skip(offset).limit(limit);
     },
   },
 
