@@ -13,7 +13,7 @@ const typeDefs = `#graphql
     }
 
     type Query {
-        getAllSkills(): [Skill]
+        getAllSkills: [Skill]
         getSkill(id: ID!): Skill
     }
 
@@ -34,18 +34,22 @@ const resolvers = {
       try {
         const skills = await Skill.find();
 
-        if (skills.length === 0) Error("No skills found in database");
+        if (skills.length === 0) throw new Error("No skills found in database");
+        return skills;
       } catch (err) {
         console.error(err);
         throw new Error(err.message || "something went wrong");
       }
     },
 
-    getSkill: async ({ id }) => {
+    getSkill: async (_, { id }) => {
       try {
+        const validation = mongoose.Types.ObjectId.isValid(id);
+
+        if (!validation) throw new Error("ID Is invalid");
         const skill = await Skill.findById(id);
 
-        if (!skill) Error("Skill not in database");
+        if (!skill) throw new Error("Skill not in database");
 
         return skill;
       } catch (err) {
@@ -56,23 +60,24 @@ const resolvers = {
   },
 
   Mutation: {
-    addSkill: async ({ fields }) => {
+    addSkill: async (_, { fields }) => {
       try {
-        const { title, status } = fields;
+        const { title } = fields;
+        let { status } = fields;
 
         if (!status) status = "Planned";
 
-        const newSkill = new Skill(title, status);
+        const newSkill = new Skill({ title, status });
         return await newSkill.save();
       } catch (err) {
         console.error(err);
         throw new Error(err.message || "Something went wrong");
       }
     },
-    deleteSkill: async ({ id }) => {
+    deleteSkill: async (_, { id }) => {
       try {
         const deleted = Skill.findByIdAndDelete(id);
-        if (!deleted) Error("No skill found in database");
+        if (!deleted) throw new Error("No skill found in database");
         return deleted;
       } catch (err) {
         console.error(err);
@@ -97,5 +102,5 @@ mongoose
     });
   })
   .catch((err) => {
-    console.log(`MongoDB Connection failed: ${err.message}`);
+    console.log(`MongoDB Connection failed: ${err}`);
   });

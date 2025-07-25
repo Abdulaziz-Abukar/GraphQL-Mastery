@@ -77,3 +77,81 @@ query ($skillId: ID!) {
     }
   }
 }
+
+# Mini Project GraphQL Query Mutations:
+# Mutations
+mutation {
+  addSkill(input: { title: "Python", status: "In Progress" }) {
+    ...SkillFields
+  }
+}
+
+mutation {
+  deleteSkill(id: "68803f2722ad2bd59f72efbf") {
+    ...SkillFields
+  }
+}
+
+mutation {
+  addModule(
+    input: { title: "Data Types", skillId: "68803f4922ad2bd59f72efc5" }
+  ) {
+    ...ModuleFields
+  }
+}
+
+mutation {
+  deleteModule(id: "68804854547099b617aedbef") {
+    ...ModuleFields
+  }
+}
+
+mutation {
+  updateSkill(
+    id: "68803f2722ad2bd59f72efbf"
+    fields: { title: "GRAPHQL", status: "In Progress" }
+  ) {
+    ...SkillFields
+  }
+}
+
+# Queries
+query {
+  getAllSkills(options: { sortBy: "title", sortOrder: 1, page: 1, limit: 10 }) {
+    ...SkillFields
+  }
+}
+
+query {
+  getSkill(id: "68803f3822ad2bd59f72efc2") {
+    ...SkillFields
+  }
+}
+
+query {
+  getModulesBySkill(skillId: "68803f2722ad2bd59f72efbf") {
+    ...ModuleFields
+  }
+}
+
+# FRAGMENTS
+fragment SkillFields on Skill {
+  id
+  title
+  status
+  modules {
+    id
+    title
+    description
+  }
+}
+
+fragment ModuleFields on Module {
+  id
+  title
+  description
+  skill {
+    id
+    title
+  }
+}
