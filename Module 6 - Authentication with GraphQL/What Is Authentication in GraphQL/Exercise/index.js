@@ -118,9 +118,17 @@ async function startServer() {
     const { url } = await startStandaloneServer(server, {
       context: async ({ req }) => {
         const authHeader = req.headers.authorization || "";
-        const token = authHeader.replace("Bearer ", "");
-        const user = verifyToken(token);
-        return { user }; // available to resolvers
+        const token = authHeader.split(" ")[1]; // Expecting "Bearer <token>"
+
+        if (!token) return { user: null };
+        try {
+          const decoded = verifyToken(token);
+          const user = await User.findById(decoded.id);
+          return { user };
+        } catch (err) {
+          console.warn("invalid token");
+          return { user: null };
+        }
       },
       listen: { port: Number(PORT) },
     });
